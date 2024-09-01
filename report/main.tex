@@ -1,0 +1,42 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+
+\title{CoBNet: Analyzing Dynamics with Approximate Change of Basis Transformations}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+The problem of learning dynamic systems can be approached by leveraging a change of basis (CoB) relationship that allows a nonlinear system to be simulated by an affine system. This technique is based on Sankaranarayanan et al., where the linearizing CoB transformation is defined such that:
+
+\[
+J_\alpha(x) \cdot F(x) = A \cdot \alpha(x) + b
+\]
+
+Here, \( J_\alpha(x) \) is the Jacobian of a learned mapping \( \alpha(x) \), \( F(x) \) represents the nonlinear dynamics of the system, \( A \) is a learned linear operator, and \( b \) is a learned offset.We propose using this relationship directly in a neural architecture, without the need to recast it in terms of Lie derivatives, to provide a nonlinear mapping to analyze continuous dynamical systems.
+
+\section{Problem Statement}
+
+Consider a nonlinear dynamical system characterized by its state \( x \in \mathbb{R}^n \) and the corresponding vector field \( F(x) \in \mathbb{R}^n \). Given a set of \( N \) snapshots of the system's state, denoted as \( \{x_1, x_2, \dots, x_N\} \), along with their associated time derivatives \( \{\dot{x}_1, \dot{x}_2, \dots, \dot{x}_N\} \), where \( \dot{x}_i = F(x_i) \), we seek to learn a mapping \( \alpha(x): \mathbb{R}^n \rightarrow \mathbb{R}^m \), a linear transformation matrix \( A \in \mathbb{R}^{m \times m} \), and an offset vector \( b \in \mathbb{R}^m \) such that the relationship
+
+\[
+J_\alpha(x_i) \cdot \dot{x}_i = A \cdot \alpha(x_i) + b
+\]
+
+holds for all \( i = 1, 2, \dots, N \). Here, \( J_\alpha(x) \) denotes the Jacobian matrix of the mapping \( \alpha(x) \) with respect to the state \( x \).
+
+This constraint can be approximated as minimizing the mean squared error between the left-hand side and right-hand side of the equation across all training examples. The optimization objective is therefore defined as
+
+\[
+\min_{a, A, b} \frac{1}{N} \sum_{i=1}^N \left\| J_\alpha(x_i) \cdot \dot{x}_i - \left( A \cdot \alpha(x_i) + b \right) \right\|_2^2,
+\]
+
+where \( \|\cdot\|_2 \) denotes the Euclidean norm. The learned transformation \( \alpha(x) \) aims to map the original nonlinear dynamics into a space where they can be approximated by an affine system.
+
+\end{document}
+
